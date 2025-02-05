@@ -17,6 +17,8 @@ const keyExtractor = (item: string) => item;
 
 export default function PlaceScreen() {
   const sheetRef = useRef<BottomSheet>(null);
+  const detailSheetRef = useRef<BottomSheet>(null);
+
   const data = useMemo(
     () =>
       Array(20)
@@ -25,15 +27,12 @@ export default function PlaceScreen() {
     []
   );
   const snapPoints = useMemo(() => ["35%", "50%", "75%"], []);
-
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const [keyboardVisible, setKeyboardVisible] = React.useState(false);
 
-  const detailSheetRef = useRef<BottomSheet>(null);
   const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
-
-  const detailSnapPoints = useMemo(() => ["75%", "90%"], []);
+  const detailSnapPoints = useMemo(() => ["90%"], []);
 
   React.useEffect(() => {
     const keyboardWillShow = Keyboard.addListener("keyboardWillShow", () => {
@@ -53,7 +52,7 @@ export default function PlaceScreen() {
 
   const handlePlacePress = useCallback((item: string) => {
     setSelectedPlace(item);
-    detailSheetRef.current?.snapToIndex(1);
+    detailSheetRef.current?.snapToIndex(0);
   }, []);
 
   const renderBackdrop = useCallback(
@@ -122,6 +121,7 @@ export default function PlaceScreen() {
         enablePanDownToClose
         backdropComponent={renderBackdrop}
         index={-1}
+        enableDynamicSizing={false}
       >
         <PlaceDetail selectedPlace={selectedPlace} />
       </BottomSheet>

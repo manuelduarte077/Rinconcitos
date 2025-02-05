@@ -1,8 +1,15 @@
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Platform,
+  SafeAreaView,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/Colors";
 
 interface MapHeaderProps {
@@ -19,7 +26,7 @@ export default function MapHeader({
   return (
     <View style={[styles.container, { paddingTop: insets.top + 10 }]}>
       <LinearGradient
-        colors={['rgba(0,0,0,0.4)', 'transparent']}
+        colors={["rgba(0,0,0,0.4)", "transparent"]}
         style={styles.gradient}
       />
       <TouchableOpacity style={styles.buttonBase} onPress={onMenuPress}>
@@ -38,7 +45,7 @@ export default function MapHeader({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 20,
+    top: Platform.OS === "ios" ? 40 : 0,
     left: 0,
     right: 0,
     backgroundColor: "transparent",
@@ -49,11 +56,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   gradient: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
-    height: '150%',
+    height: "150%",
     zIndex: -1,
   },
   buttonBase: {
@@ -65,5 +72,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     color: Colors.light.text,
-    },
+  },
 });
