@@ -38,7 +38,7 @@ export default function MapHeader({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 0,
+    top: 20,
     left: 0,
     right: 0,
     backgroundColor: "transparent",
@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingBottom: 10,
-    zIndex: 1000,
   },
   gradient: {
     position: 'absolute',
