@@ -45,7 +45,7 @@ export default function MapHeader({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: Platform.OS === "ios" ? 40 : 0,
+    top: Platform.OS === "ios" ? 10 : 0,
     left: 0,
     right: 0,
     backgroundColor: "transparent",
