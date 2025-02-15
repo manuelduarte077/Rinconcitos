@@ -1,10 +1,8 @@
 import { Place } from "@/types/places";
 import axios from "axios";
 
-const API_KEY = "AIzaSyBZGbLTAnBvUU2TqWlS2J0cQoOzSfLXsWI";
-
 const placesApi = axios.create({
-  baseURL: "https://maps.googleapis.com/maps/api/place",
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 
 interface PlacesResponse {
@@ -25,7 +23,7 @@ export const searchPlacesByQuery = async (
       query,
       location: `${latitude},${longitude}`,
       radius,
-      key: API_KEY,
+      key: process.env.EXPO_PUBLIC_API_KEY,
       maxResults,
     },
   });
