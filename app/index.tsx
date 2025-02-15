@@ -21,10 +21,10 @@ export default function PlaceScreen() {
 
   const data = useMemo(
     () =>
-      Array(20)
+      Array(10)
         .fill(0)
         .map((_, index) => `index-${index}`),
-    []
+    [],
   );
   const snapPoints = useMemo(() => ["35%", "50%", "75%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -64,7 +64,7 @@ export default function PlaceScreen() {
         opacity={0.5}
       />
     ),
-    []
+    [],
   );
 
   const renderItem = useCallback(
@@ -76,14 +76,16 @@ export default function PlaceScreen() {
         onPress={handlePlacePress}
       />
     ),
-    [scrollY, handlePlacePress]
+    [scrollY, handlePlacePress],
   );
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <GestureHandlerRootView>
       <StatusBar style="dark" />
       <MapView
-        style={styles.container}
+        style={{
+          flex: 1,
+        }}
         showsUserLocation={true}
         region={{
           latitude: 12.13282,
@@ -129,8 +131,4 @@ export default function PlaceScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+

@@ -18,7 +18,7 @@ export const searchPlacesByQuery = async (
   latitude: number,
   longitude: number,
   radius: number = 10000,
-  maxResults: number = 10,
+  maxResults: number = 10
 ): Promise<Place[]> => {
   const { data } = await placesApi.get<PlacesResponse>("/textsearch/json", {
     params: {

@@ -15,14 +15,19 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.donmanuel.rinconcitos.app"
+      "bundleIdentifier": "dev.donmanuel.rinconcitos.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrar lugares cercanos.",
+        "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrar lugares cercanos."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "dev.donmanuel.rinconcitos.app"
+      "package": "dev.donmanuel.rinconcitos.app",
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
     },
     "web": {
       "bundler": "metro",
