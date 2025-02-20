@@ -12,8 +12,11 @@ import { Keyboard } from "react-native";
 import { PlaceListItem } from "../components/PlaceListItem";
 import { SearchBar } from "../components/SearchBar";
 import { PlaceDetail } from "../components/PlaceDetail";
+import Colors from "@/constants/Colors";
+import { Place } from "@/types/places";
+import { searchPlacesByQuery } from "@/api/places";
 
-const keyExtractor = (item: string) => item;
+const keyExtractor = (item: Place) => item.place_id;
 
 export default function PlaceScreen() {
   const sheetRef = useRef<BottomSheet>(null);
@@ -23,8 +26,24 @@ export default function PlaceScreen() {
     () =>
       Array(10)
         .fill(0)
-        .map((_, index) => `index-${index}`),
-    [],
+        .map((_, index) => ({
+          place_id: `index-${index}`,
+          name: `Place ${index}`,
+          formatted_address: `Address ${index}`,
+          business_status: "OPEN",
+          rating: 4.5,
+          user_ratings_total: 100,
+          utc_offset_minutes: 0,
+          types: ["restaurant"],
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/restaurant-71.png",
+          geometry: {
+            location: {
+              lat: 12.13282,
+              lng: -86.2504,
+            },
+          },
+        })),
+    []
   );
   const snapPoints = useMemo(() => ["35%", "50%", "75%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -64,11 +83,11 @@ export default function PlaceScreen() {
         opacity={0.5}
       />
     ),
-    [],
+    []
   );
 
   const renderItem = useCallback(
-    ({ item, index }: { item: string; index: number }) => (
+    ({ item, index }: { item: Place; index: number }) => (
       <PlaceListItem
         item={item}
         index={index}
@@ -76,7 +95,7 @@ export default function PlaceScreen() {
         onPress={handlePlacePress}
       />
     ),
-    [scrollY, handlePlacePress],
+    [scrollY, handlePlacePress]
   );
 
   return (
@@ -105,6 +124,9 @@ export default function PlaceScreen() {
         keyboardBehavior="extend"
         keyboardBlurBehavior="restore"
         android_keyboardInputMode="adjustResize"
+        backgroundStyle={{
+          backgroundColor: Colors.backgroundSecondary,
+        }}
       >
         <SearchBar />
         <BottomSheetFlashList
@@ -130,5 +152,3 @@ export default function PlaceScreen() {
     </GestureHandlerRootView>
   );
 }
-
-

@@ -1,47 +1,72 @@
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Animated,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import React from 'react';
+import React from "react";
+import { Place } from "@/types/places";
+import Colors from "@/constants/Colors";
 
 interface PlaceListItemProps {
-  item: string;
+  item: Place;
   index: number;
   scrollY: Animated.Value;
-  onPress: (item: string) => void;
+  onPress: (item: Place["place_id"]) => void;
 }
 
-export const PlaceListItem = ({ item, index, scrollY, onPress }: PlaceListItemProps) => {
+export const PlaceListItem = ({
+  item,
+  index,
+  scrollY,
+  onPress,
+}: PlaceListItemProps) => {
   const scale = scrollY.interpolate({
     inputRange: [-1, 0, 100 * index, 100 * (index + 2)],
     outputRange: [1, 1, 1, 0.8],
   });
 
   return (
-    <Pressable onPress={() => onPress(item)}>
+    <Pressable onPress={() => onPress(item.place_id)}>
       <Animated.View style={[styles.itemContainer, { transform: [{ scale }] }]}>
         <View style={styles.placeImage}>
-          <Text>🏪</Text>
+          <Image
+            source={require("@/assets/images/icon.png")}
+            style={styles.placeImage}
+          />
         </View>
         <View style={styles.placeInfo}>
-          <Text style={styles.placeName}>Place {item}</Text>
+          <Text style={styles.placeName}>{item.name}</Text>
           <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={16} color="#FFA41C" />
-            <Text style={styles.rating}>4.6</Text>
-            <Text style={styles.reviews}>• 120 Reviews</Text>
+            <Ionicons name="star" size={16} color={Colors.star} />
+            <Text style={styles.rating}>{item.rating}</Text>
+            <Text style={styles.reviews}>
+              • {item.user_ratings_total} Reviews
+            </Text>
           </View>
-          <View style={styles.locationContainer}>
-            <Ionicons name="location" size={14} color="#666" />
-            <Text style={styles.location}>USA</Text>
-          </View>
-        </View>
-        <View
-          style={[
-            styles.statusBadge,
-            { backgroundColor: index % 2 === 0 ? "#4CAF50" : "#FF5252" },
-          ]}
-        >
-          <Text style={styles.statusText}>
-            {index % 2 === 0 ? "Open" : "Closed"}
-          </Text>
+
+          {item.business_status === "OPEN" && (
+            <View style={styles.locationContainer}>
+              <View
+                style={[
+                  styles.statusBadge,
+                  {
+                    backgroundColor:
+                      item.business_status === "OPEN"
+                        ? Colors.backgroundIcon
+                        : Colors.primary,
+                  },
+                ]}
+              >
+                <Text style={styles.statusText}>{item.business_status}</Text>
+              </View>
+              <Ionicons name="location" size={14} color={Colors.primary} />
+              <Text style={styles.location}>{item.formatted_address}</Text>
+            </View>
+          )}
         </View>
       </Animated.View>
     </Pressable>
@@ -52,23 +77,21 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     padding: 12,
-    backgroundColor: "white",
+    backgroundColor: Colors.background,
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 16,
-    shadowColor: "#000",
+    shadowColor: Colors.subText,
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
-    elevation: 5,
   },
   placeImage: {
-    width: 70,
-    height: 70,
-    backgroundColor: "#f5f5f5",
+    width: 110,
+    height: 110,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
@@ -82,6 +105,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 4,
+    color: Colors.text,
+    fontFamily: "Avenir-Medium",
   },
   ratingContainer: {
     flexDirection: "row",
@@ -91,9 +116,11 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontWeight: "500",
+    color: Colors.star,
   },
   reviews: {
-    color: "#666",
+    color: Colors.subText,
+    fontFamily: "Avenir-Medium",
   },
   locationContainer: {
     flexDirection: "row",
@@ -101,16 +128,17 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   location: {
-    color: "#666",
+    color: Colors.subText,
+    fontFamily: "Avenir-Medium",
   },
   statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
-    alignSelf: "flex-start",
   },
   statusText: {
-    color: "white",
+    color: Colors.background,
     fontWeight: "500",
+    fontFamily: "Avenir-Medium",
   },
-}); 
+});

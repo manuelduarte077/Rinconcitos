@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: Colors.light.text,
+    color: Colors.text,
     fontFamily: "Avenir-Medium",
   },
 });

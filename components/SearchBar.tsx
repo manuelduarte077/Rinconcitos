@@ -7,13 +7,13 @@ export const SearchBar = () => {
   return (
     <View style={styles.searchContainer}>
       <View style={styles.searchBar}>
-        <Ionicons name="search" size={28} color={Colors.light.primary} />
+        <Ionicons name="search" size={28} color={Colors.primary} />
         <View style={styles.divider} />
 
         <TextInput placeholder="Search" style={styles.searchInput} />
       </View>
       <View style={styles.filterButton}>
-        <Ionicons name="options" size={28} color={Colors.light.tint} />
+        <Ionicons name="options" size={28} color={Colors.tint} />
       </View>
     </View>
   );
@@ -30,13 +30,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.light.secondary,
+    backgroundColor: Colors.secondary,
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 2,
     gap: 8,
     borderWidth: 1,
-    borderColor: Colors.light.subText,
+    borderColor: Colors.subText,
   },
   searchInput: {
     flex: 1,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   filterButton: {
     width: 48,
     height: 48,
-    backgroundColor: Colors.light.primary,
+    backgroundColor: Colors.primary,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
@@ -54,6 +54,6 @@ const styles = StyleSheet.create({
   divider: {
     width: 2,
     height: 26,
-    backgroundColor: Colors.light.subText,
+    backgroundColor: Colors.subText,
   },
 }); 
