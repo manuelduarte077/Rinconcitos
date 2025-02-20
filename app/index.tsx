@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "../hooks/useLocation";
 import { getNearbyPlaces, searchPlacesByQuery } from "../api/places";
+import { ShimmerPlaceItem } from '@/components/ShimmerPlaceItem';
 
 const keyExtractor = (item: Place) => item.place_id;
 
@@ -110,6 +111,12 @@ export default function PlaceScreen() {
     [scrollY, handlePlacePress]
   );
 
+  const renderLoadingState = () => {
+    return Array(5).fill(0).map((_, index) => (
+      <ShimmerPlaceItem key={index} />
+    ));
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" />
@@ -146,14 +153,18 @@ export default function PlaceScreen() {
           }}
         />
         <View style={styles.listContainer}>
-          <BottomSheetFlashList
-            data={places}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            estimatedItemSize={100}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContentContainer}
-          />
+          {nearbyPlacesLoading || searchLoading ? (
+            renderLoadingState()
+          ) : (
+            <BottomSheetFlashList
+              data={places}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              estimatedItemSize={100}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listContentContainer}
+            />
+          )}
         </View>
       </BottomSheet>
 
