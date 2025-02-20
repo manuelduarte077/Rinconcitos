@@ -1,4 +1,4 @@
-import { StyleSheet, Animated } from "react-native";
+import { Animated } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import MapView from "react-native-maps";
 import MapHeader from "../components/MapHeader";
