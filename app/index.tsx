@@ -1,6 +1,6 @@
 import { Animated, View, StyleSheet, Platform } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import MapHeader from "../components/MapHeader";
 import { StatusBar } from "expo-status-bar";
 import BottomSheet, {
@@ -20,6 +20,7 @@ import { useLocation } from "../hooks/useLocation";
 import { getNearbyPlaces, searchPlacesByQuery } from "../api/places";
 import { ShimmerPlaceItem } from '@/components/ShimmerPlaceItem';
 import { CustomMarker } from '@/components/CustomMarker';
+
 
 const keyExtractor = (item: Place) => item.place_id;
 
@@ -136,6 +137,7 @@ export default function PlaceScreen() {
         place={place}
         onMarkerPress={handleMarkerPress}
         onCalloutPress={handlePlacePress}
+        selectedPlaceId={selectedPlace?.place_id ?? null}
       />
     ));
   };

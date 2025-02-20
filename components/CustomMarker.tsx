@@ -1,24 +1,26 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
-import { Marker, Callout } from 'react-native-maps';
-import { Image } from 'expo-image';
+import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { Marker, Callout } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
-import { Place } from '@/types/places';
-import Colors from '@/constants/Colors';
-import { getPhotoUrl } from '@/api/places';
+import { Place } from "@/types/places";
+import Colors from "@/constants/Colors";
 
 interface CustomMarkerProps {
   place: Place;
   onMarkerPress: (place: Place) => void;
   onCalloutPress: (place: Place) => void;
+  selectedPlaceId: string | null;
 }
 
-export const CustomMarker = ({ place, onMarkerPress, onCalloutPress }: CustomMarkerProps) => {
-  const [isPressed, setIsPressed] = useState(false);
+export const CustomMarker = ({
+  place,
+  onMarkerPress,
+  onCalloutPress,
+  selectedPlaceId,
+}: CustomMarkerProps) => {
+  const isSelected = selectedPlaceId === place.place_id;
   const isOpen = place.business_status === "OPERATIONAL";
-  const photoUrl = place.photos?.[0]?.photo_reference 
-    ? getPhotoUrl(place.photos[0].photo_reference)
-    : null;
+
 
   return (
     <Marker
@@ -26,60 +28,39 @@ export const CustomMarker = ({ place, onMarkerPress, onCalloutPress }: CustomMar
         latitude: place.geometry.location.lat,
         longitude: place.geometry.location.lng,
       }}
-      onPress={() => {
-        setIsPressed(true);
-        onMarkerPress(place);
-      }}
+      onPress={() => onMarkerPress(place)}
     >
-      <View style={[
-        styles.markerContainer,
-        isPressed && styles.markerContainerPressed
-      ]}>
-        <View style={styles.marker}>
-          <Ionicons 
-            name="location" 
-            size={40} 
-            color={isOpen ? Colors.primary : Colors.subText} 
-          />
+      <View
+        style={[
+          styles.markerContainer,
+          isSelected && styles.markerContainerPressed,
+        ]}
+      >
+        <View style={styles.markerOuterRing}>
+          <View style={styles.markerInnerRing}>
+            <View
+              style={[
+                { backgroundColor: isOpen ? Colors.primary : Colors.subText },
+              ]}
+            />
+          </View>
         </View>
       </View>
 
-      <Callout
-        tooltip
-        onPress={() => onCalloutPress(place)}
-      >
+      <Callout tooltip onPress={() => onCalloutPress(place)}>
         <View style={styles.calloutContainer}>
-          {photoUrl && (
-            <Image
-              source={{ uri: photoUrl }}
-              style={styles.calloutImage}
-              contentFit="cover"
-            />
-          )}
-          <View style={styles.calloutContent}>
+          <View style={styles.calloutHeader}>
             <Text style={styles.calloutTitle} numberOfLines={1}>
               {place.name}
             </Text>
-            
             <View style={styles.ratingContainer}>
-              <Ionicons name="star" size={16} color={Colors.star} />
+              <Ionicons name="star" size={16} color={Colors.background} />
               <Text style={styles.rating}>{place.rating}</Text>
-              <Text style={styles.reviews}>
-                ({place.user_ratings_total})
-              </Text>
-            </View>
-
-            <View style={[
-              styles.statusBadge,
-              { backgroundColor: isOpen ? Colors.backgroundIcon : Colors.primary }
-            ]}>
-              <Text style={styles.statusText}>
-                {isOpen ? 'ABIERTO' : 'CERRADO'}
-              </Text>
             </View>
           </View>
-          
-          <View style={styles.calloutArrow} />
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusText}>{isOpen ? "Open" : "Closed"}</Text>
+          </View>
         </View>
       </Callout>
     </Marker>
@@ -88,81 +69,76 @@ export const CustomMarker = ({ place, onMarkerPress, onCalloutPress }: CustomMar
 
 const styles = StyleSheet.create({
   markerContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    width: 48,
+    height: 48,
+  },
+  markerOuterRing: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.primary,
+    opacity: 0.7,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  markerInnerRing: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: Colors.background,
+    opacity: 0.8,
+    alignItems: "center",
+    justifyContent: "center",
   },
   markerContainerPressed: {
-    transform: [{scale: 1.1}],
-  },
-  marker: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    transform: [{ scale: 1.1 }],
   },
   calloutContainer: {
-    width: 200,
-    backgroundColor: Colors.background,
-    borderRadius: 8,
-    padding: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    backgroundColor: Colors.primary,
+    borderRadius: 16,
+    padding: 12,
+    minWidth: 140,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
-  calloutImage: {
-    width: '100%',
-    height: 100,
-    borderRadius: 8,
+  calloutHeader: {
     marginBottom: 8,
   },
-  calloutContent: {
-    alignItems: 'center',
-    gap: 4,
-  },
   calloutTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.text,
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.background,
     fontFamily: "Avenir-Medium",
+    marginBottom: 4,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   rating: {
-    fontSize: 14,
-    color: Colors.text,
-    fontFamily: "Avenir-Medium",
-  },
-  reviews: {
-    fontSize: 12,
-    color: Colors.subText,
-    fontFamily: "Avenir-Medium",
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
-    marginTop: 4,
-  },
-  statusText: {
-    fontSize: 12,
+    fontSize: 16,
     color: Colors.background,
     fontFamily: "Avenir-Medium",
+    fontWeight: "500",
   },
-  calloutArrow: {
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderTopWidth: 8,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: Colors.background,
-    alignSelf: 'center',
-    marginTop: 8,
+  statusContainer: {
+    backgroundColor: Colors.background,
+    borderRadius: 8,
+    padding: 6,
   },
-}); 
+  statusText: {
+    fontSize: 14,
+    color: Colors.text,
+    fontFamily: "Avenir-Bold",
+    textAlign: "center",
+  },
+});
