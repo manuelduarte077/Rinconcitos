@@ -15,7 +15,7 @@ interface PlaceListItemProps {
   item: Place;
   index: number;
   scrollY: Animated.Value;
-  onPress: (item: Place["place_id"]) => void;
+  onPress: (place: Place) => void;
 }
 
 export const PlaceListItem = ({
@@ -30,7 +30,7 @@ export const PlaceListItem = ({
   });
 
   return (
-    <Pressable onPress={() => onPress(item.place_id)}>
+    <Pressable onPress={() => onPress(item)}>
       <Animated.View style={[styles.itemContainer, { transform: [{ scale }] }]}>
         <View style={styles.placeImage}>
           <Image

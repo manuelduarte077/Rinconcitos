@@ -3,13 +3,15 @@ import { Ionicons } from "@expo/vector-icons";
 import React from 'react';
 import { Image } from 'expo-image';
 import { Place } from '@/types/places';
+import Colors from '@/constants/Colors';
 
 
 interface PlaceDetailProps {
-  selectedPlace: Place | null;
+  selectedPlace: Place;
 }
 
 export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
+  const isOpen = selectedPlace.business_status === "OPERATIONAL";
 
   return (
     <View style={styles.detailContainer}>
@@ -19,29 +21,47 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
         </View>
 
         <Image
-          source={{ uri: selectedPlace?.icon }}
+          source={{ uri: selectedPlace.photos?.[0]?.photo_reference }}
           style={styles.detailImage}
           contentFit="cover"
         />
         <View style={styles.detailInfo}>
-          <Text style={styles.detailTitle}>{selectedPlace?.name}</Text>
+          <Text style={styles.detailTitle}>{selectedPlace.name}</Text>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={20} color="#FFA41C" />
-            <Text style={styles.rating}>{selectedPlace?.rating}</Text>
-            <Text style={styles.reviews}>• {selectedPlace?.user_ratings_total} Reviews</Text>
+            <Text style={styles.rating}>{selectedPlace.rating}</Text>
+            <Text style={styles.reviews}>• {selectedPlace.user_ratings_total} Reviews</Text>
           </View>
           <View style={styles.locationContainer}>
             <Ionicons name="location" size={16} color="#666" />
-            <Text style={styles.location}>{selectedPlace?.formatted_address}</Text>
+            <Text style={styles.location}>{selectedPlace.formatted_address}</Text>
           </View>
         </View>
       </View>
       
+      <View style={styles.statusContainer}>
+        <View style={[
+          styles.statusBadge,
+          { backgroundColor: isOpen ? Colors.backgroundIcon : Colors.primary }
+        ]}>
+          <Text style={styles.statusText}>
+            {isOpen ? 'ABIERTO' : 'CERRADO'}
+          </Text>
+        </View>
+      </View>
+
       <View style={styles.detailContent}>
-        <Text style={styles.sectionTitle}>Description</Text>
-        <Text style={styles.description}>
-          {selectedPlace?.business_status}
-        </Text>
+        <Text style={styles.sectionTitle}>Información</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>Dirección:</Text>
+          <Text style={styles.infoText}>{selectedPlace.formatted_address}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>Tipo:</Text>
+          <Text style={styles.infoText}>
+            {selectedPlace.types?.join(', ')}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -62,7 +82,7 @@ const styles = StyleSheet.create({
   handleIndicatorStyle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: Colors.subText,
     borderRadius: 2,
   },
   detailHeader: {
@@ -91,7 +111,7 @@ const styles = StyleSheet.create({
     fontFamily: "Avenir-Medium",
   },
   reviews: {
-    color: "#666",
+    color: Colors.subText,
     fontFamily: "Avenir-Medium",
   },
   locationContainer: {
@@ -100,7 +120,7 @@ const styles = StyleSheet.create({
     gap: 4, 
   },
   location: {
-    color: "#666",
+    color: Colors.subText,
     fontFamily: "Avenir-Medium",
   },
   sectionTitle: {
@@ -115,8 +135,37 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: '#666',
+    color: Colors.subText,
     lineHeight: 24,
+    fontFamily: "Avenir-Medium",
+  },
+  statusContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  statusBadge: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  statusText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.background,
+    fontFamily: "Avenir-Medium",
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginRight: 8,
+    fontFamily: "Avenir-Medium",
+  },
+  infoText: {
+    fontSize: 16,
     fontFamily: "Avenir-Medium",
   },
 }); 
