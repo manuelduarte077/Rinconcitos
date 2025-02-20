@@ -10,6 +10,7 @@ import React from "react";
 import { Place } from "@/types/places";
 import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
+import { getPhotoUrl, getCityFromPlace } from '@/api/places';
 
 interface PlaceListItemProps {
   item: Place;
@@ -24,17 +25,25 @@ export const PlaceListItem = ({
   scrollY,
   onPress,
 }: PlaceListItemProps) => {
+  if (!item.photos?.[0]?.photo_reference) {
+    return null;
+  }
+
   const scale = scrollY.interpolate({
     inputRange: [-1, 0, 100 * index, 100 * (index + 2)],
     outputRange: [1, 1, 1, 0.8],
   });
+
+  const photoUrl = getPhotoUrl(item.photos[0].photo_reference);
+  const isOpen = item.business_status === "OPERATIONAL";
+  const city = getCityFromPlace(item);
 
   return (
     <Pressable onPress={() => onPress(item)}>
       <Animated.View style={[styles.itemContainer, { transform: [{ scale }] }]}>
         <View style={styles.placeImage}>
           <Image
-            source={{ uri: item.icon }}
+            source={{ uri: photoUrl }}
             style={styles.placeImage}
             contentFit="cover"
           />
@@ -49,25 +58,22 @@ export const PlaceListItem = ({
             </Text>
           </View>
 
-          {item.business_status === "OPEN" && (
-            <View style={styles.locationContainer}>
-              <View
-                style={[
-                  styles.statusBadge,
-                  {
-                    backgroundColor:
-                      item.business_status === "OPEN"
-                        ? Colors.backgroundIcon
-                        : Colors.primary,
-                  },
-                ]}
-              >
-                <Text style={styles.statusText}>{item.business_status}</Text>
-              </View>
-              <Ionicons name="location" size={14} color={Colors.primary} />
-              <Text style={styles.location}>{item.formatted_address}</Text>
+          <View style={styles.locationContainer}>
+            <View
+              style={[
+                styles.statusBadge,
+                {
+                  backgroundColor: isOpen ? Colors.backgroundIcon : Colors.primary,
+                },
+              ]}
+            >
+              <Text style={styles.statusText}>
+                {isOpen ? "ABIERTO" : "CERRADO"}
+              </Text>
             </View>
-          )}
+            <Ionicons name="location" size={14} color={Colors.primary} />
+            <Text style={styles.location}>{city.city}</Text>
+          </View>
         </View>
       </Animated.View>
     </Pressable>

@@ -4,6 +4,7 @@ import React from 'react';
 import { Image } from 'expo-image';
 import { Place } from '@/types/places';
 import Colors from '@/constants/Colors';
+import { getPhotoUrl } from '@/api/places';
 
 
 interface PlaceDetailProps {
@@ -12,6 +13,9 @@ interface PlaceDetailProps {
 
 export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
   const isOpen = selectedPlace.business_status === "OPERATIONAL";
+  const photoUrl = selectedPlace.photos?.[0]?.photo_reference 
+    ? getPhotoUrl(selectedPlace.photos[0].photo_reference)
+    : null;
 
   return (
     <View style={styles.detailContainer}>
@@ -21,7 +25,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
         </View>
 
         <Image
-          source={{ uri: selectedPlace.photos?.[0]?.photo_reference }}
+          source={{ uri: photoUrl }}
           style={styles.detailImage}
           contentFit="cover"
         />
