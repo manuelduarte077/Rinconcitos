@@ -1,31 +1,21 @@
-const primary = "#ff6b4a";
-const background = "#ffffff";
-const secondary = "#f3f3f3";
-const subText = "#d8d8d8";
+const primary = "#FF6B4A";
+const background = "#FFFFFF";
+const secondary = "#F3F3F3";
+const subText = "#D8D8D8";
+const backgroundSecondary = "#f8f8f8";
 const text = "#353535";
-const tint = "#ffffff";
-const backgroundIcon = "#84d383";
-const star = "#f39a39";
+const tint = "#FFFFFF";
+const backgroundIcon = "#84D383";
+const star = "#F39A39";
 
 export default {
-  light: {
-    primary,
-    background,
-    secondary,
-    subText,
-    text,
-    tint,
-    backgroundIcon,
-    star,
-  },
-  dark: {
-    primary,
-    background,
-    secondary,
-    subText,
-    text,
-    tint,
-    backgroundIcon,
-    star,
-  },
+  primary,
+  background,
+  secondary,
+  subText,
+  backgroundSecondary,
+  text,
+  tint,
+  backgroundIcon,
+  star,
 };
