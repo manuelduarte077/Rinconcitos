@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "../hooks/useLocation";
 import { getNearbyPlaces, searchPlacesByQuery } from "../api/places";
 import { ShimmerPlaceItem } from '@/components/ShimmerPlaceItem';
+import { CustomMarker } from '@/components/CustomMarker';
 
 const keyExtractor = (item: Place) => item.place_id;
 
@@ -59,6 +60,8 @@ export default function PlaceScreen() {
 
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
+  const mapRef = useRef<MapView>(null);
+
   React.useEffect(() => {
     const keyboardWillShow = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
@@ -86,6 +89,15 @@ export default function PlaceScreen() {
     setSelectedPlace(place);
     detailSheetRef.current?.snapToIndex(0);
   }, []);
+
+  const handleMarkerPress = (place: Place) => {
+    mapRef.current?.animateToRegion({
+      latitude: place.geometry.location.lat,
+      longitude: place.geometry.location.lng,
+      latitudeDelta: 0.005,
+      longitudeDelta: 0.005,
+    });
+  };
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -117,10 +129,22 @@ export default function PlaceScreen() {
     ));
   };
 
+  const renderMarkers = () => {
+    return places?.map((place) => (
+      <CustomMarker
+        key={place.place_id}
+        place={place}
+        onMarkerPress={handleMarkerPress}
+        onCalloutPress={handlePlacePress}
+      />
+    ));
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" />
       <MapView
+        ref={mapRef}
         style={{ flex: 1 }}
         showsUserLocation={true}
         region={{
@@ -129,7 +153,11 @@ export default function PlaceScreen() {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
-      />
+        mapType="hybrid"
+        showsTraffic={true}
+      >
+        {renderMarkers()}
+      </MapView>
       <MapHeader onMenuPress={() => {}} onProfilePress={() => {}} />
 
       <BottomSheet
@@ -193,5 +221,29 @@ const styles = StyleSheet.create({
   },
   listContentContainer: {
     paddingBottom: 30,
+  },
+  markerContainer: {
+    alignItems: 'center',
+    width: 150,
+  },
+  markerImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: Colors.background,
+  },
+  markerBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginTop: 4,
+    maxWidth: '100%',
+  },
+  markerName: {
+    color: Colors.background,
+    fontSize: 12,
+    fontFamily: "Avenir-Medium",
+    textAlign: 'center',
   },
 });
