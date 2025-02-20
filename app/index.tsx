@@ -45,7 +45,7 @@ export default function PlaceScreen() {
         })),
     []
   );
-  const snapPoints = useMemo(() => ["35%", "50%", "75%"], []);
+  const snapPoints = useMemo(() => ["50%", "75%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const [keyboardVisible, setKeyboardVisible] = React.useState(false);

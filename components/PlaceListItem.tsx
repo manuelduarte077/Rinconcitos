@@ -4,12 +4,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Place } from "@/types/places";
 import Colors from "@/constants/Colors";
+import { Image } from "expo-image";
 
 interface PlaceListItemProps {
   item: Place;
@@ -34,8 +34,9 @@ export const PlaceListItem = ({
       <Animated.View style={[styles.itemContainer, { transform: [{ scale }] }]}>
         <View style={styles.placeImage}>
           <Image
-            source={require("@/assets/images/icon.png")}
+            source={{ uri: item.icon }}
             style={styles.placeImage}
+            contentFit="cover"
           />
         </View>
         <View style={styles.placeInfo}>
