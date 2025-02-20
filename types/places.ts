@@ -16,6 +16,16 @@ export interface Place {
   types: string[];
   icon: string;
   geometry: Geometry;
+  photos?: {
+    photo_reference: string;
+    height: number;
+    width: number;
+  }[];
+  opening_hours?: {
+    open_now: boolean;
+  };
+  price_level?: number;
+  vicinity: string;
 }
 
 export interface Coordinates {

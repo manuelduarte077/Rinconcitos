@@ -1,16 +1,34 @@
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-import React from 'react';
+import React, { useState } from 'react';
 import Colors from '@/constants/Colors';
 
-export const SearchBar = () => {
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
+
+export const SearchBar = ({ onSearch }: SearchBarProps) => {
+  const [searchText, setSearchText] = useState('');
+
+  const handleSearch = () => {
+    if (searchText.trim()) {
+      onSearch(searchText);
+    }
+  };
+
   return (
     <View style={styles.searchContainer}>
       <View style={styles.searchBar}>
         <Ionicons name="search" size={28} color={Colors.primary} />
         <View style={styles.divider} />
-
-        <TextInput placeholder="Search" style={styles.searchInput} />
+        <TextInput 
+          placeholder="Buscar lugares cercanos" 
+          style={styles.searchInput}
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmitEditing={handleSearch}
+          returnKeyType="search"
+        />
       </View>
       <View style={styles.filterButton}>
         <Ionicons name="options" size={28} color={Colors.tint} />
@@ -23,8 +41,10 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    padding: 18,
     gap: 12,
+    backgroundColor: Colors.background,
+    borderRadius: 18,
   },
   searchBar: {
     flex: 1,
