@@ -1,4 +1,4 @@
-import { Animated } from "react-native";
+import { Animated, View } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import MapView from "react-native-maps";
 import MapHeader from "../components/MapHeader";
@@ -14,11 +14,13 @@ import { SearchBar } from "../components/SearchBar";
 import { PlaceDetail } from "../components/PlaceDetail";
 import Colors from "@/constants/Colors";
 import { Place } from "@/types/places";
-import { searchPlacesByQuery } from "@/api/places";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const keyExtractor = (item: Place) => item.place_id;
 
 export default function PlaceScreen() {
+  const safeArea = useSafeAreaInsets();
+
   const sheetRef = useRef<BottomSheet>(null);
   const detailSheetRef = useRef<BottomSheet>(null);
 
@@ -127,8 +129,8 @@ export default function PlaceScreen() {
         backgroundStyle={{
           backgroundColor: Colors.backgroundSecondary,
         }}
+        handleComponent={() => <SearchBar />}
       >
-        <SearchBar />
         <BottomSheetFlashList
           data={data}
           keyExtractor={keyExtractor}
@@ -138,16 +140,23 @@ export default function PlaceScreen() {
           ListFooterComponentStyle={{ marginBottom: 30 }}
         />
       </BottomSheet>
-
       <BottomSheet
+        handleIndicatorStyle={{ display: "none" }}
         ref={detailSheetRef}
         snapPoints={detailSnapPoints}
         enablePanDownToClose
         backdropComponent={renderBackdrop}
         index={-1}
         enableDynamicSizing={false}
+        handleComponent={() => <View style={{ height: 0 }} />}
       >
-        <PlaceDetail selectedPlace={selectedPlace} />
+        <PlaceDetail
+          selectedPlace={
+            selectedPlace
+              ? data.find((item) => item.place_id === selectedPlace) ?? null  
+              : null
+          }
+        />
       </BottomSheet>
     </GestureHandlerRootView>
   );

@@ -23,8 +23,12 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    padding: 18,
     gap: 12,
+    backgroundColor: Colors.background,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: Colors.subText,
   },
   searchBar: {
     flex: 1,
