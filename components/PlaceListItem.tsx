@@ -1,16 +1,10 @@
-import {
-  Animated,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Place } from "@/types/places";
 import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
-import { getPhotoUrl, getCityFromPlace } from '@/api/places';
+import { getPhotoUrl, getCityFromPlace } from "@/api/places";
 
 interface PlaceListItemProps {
   item: Place;
@@ -63,7 +57,9 @@ export const PlaceListItem = ({
               style={[
                 styles.statusBadge,
                 {
-                  backgroundColor: isOpen ? Colors.backgroundIcon : Colors.primary,
+                  backgroundColor: isOpen
+                    ? Colors.backgroundIcon
+                    : Colors.primary,
                 },
               ]}
             >
@@ -72,7 +68,12 @@ export const PlaceListItem = ({
               </Text>
             </View>
             <Ionicons name="location" size={14} color={Colors.primary} />
-            <Text style={styles.location}>{city.city}</Text>
+            <Text
+              numberOfLines={1}
+              style={styles.location}
+            >
+              {city.city}
+            </Text>
           </View>
         </View>
       </Animated.View>
@@ -133,10 +134,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flex: 1,
   },
   location: {
     color: Colors.subText,
     fontFamily: "Avenir-Medium",
+    flex: 1,
+    maxWidth: "100%",
   },
   statusBadge: {
     paddingHorizontal: 12,

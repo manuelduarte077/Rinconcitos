@@ -55,8 +55,10 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
               </Text>
             </View>
             <View style={styles.locationContainer}>
-              <Ionicons name="location" size={16} color={Colors.subText} />
-              <Text style={styles.location}>{city.city}</Text>
+              <Ionicons name="location" size={16} color={Colors.primary} />
+              <Text numberOfLines={2} style={styles.location}>
+                {city.city}
+              </Text>
             </View>
           </View>
 
@@ -234,11 +236,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    flex: 1,
   },
   location: {
     color: Colors.subText,
     fontSize: 16,
     fontFamily: "Avenir-Medium",
+    flexShrink: 1,
   },
   titleContainer: {
     flexDirection: "row",
