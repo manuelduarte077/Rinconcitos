@@ -16,7 +16,6 @@ import MapView, {
   PROVIDER_GOOGLE,
   PROVIDER_DEFAULT,
   Marker,
-  Callout,
 } from "react-native-maps";
 
 interface PlaceDetailProps {
@@ -31,20 +30,23 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
   const city = getCityFromPlace(selectedPlace);
 
   return (
-    <View style={styles.detailContainer}>
+    <View style={styles.container}>
       <View style={styles.handleIndicatorContainer}>
         <View style={styles.handleIndicatorStyle} />
       </View>
+      <Image
+        source={{ uri: photoUrl }}
+        style={styles.detailImage}
+        contentFit="cover"
+      />
       <ScrollView
-        style={styles.scrollContainer}
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
+        bounces={Platform.OS === "ios"}
+        nestedScrollEnabled={true}
+        automaticallyAdjustContentInsets={true}
       >
-        <Image
-          source={{ uri: photoUrl }}
-          style={styles.detailImage}
-          contentFit="cover"
-        />
-
         <View style={styles.mainContent}>
           <View style={styles.headerRow}>
             <View style={styles.statusBadge}>
@@ -61,7 +63,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
           <View style={styles.titleContainer}>
             <Text style={styles.detailTitle}>{selectedPlace.name}</Text>
             <TouchableOpacity style={styles.bookmarkButton}>
-              <Ionicons name="bookmark" size={24} color={Colors.primary} />
+              <Ionicons name="bookmark" size={24} color={Colors.background} />
             </TouchableOpacity>
           </View>
 
@@ -78,9 +80,16 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
                 color="#FFC107"
               />
             ))}
-            <Text style={styles.rating}>
-              {selectedPlace.rating} ({selectedPlace.user_ratings_total}{" "}
-              Reviews)
+            <Text style={styles.rating}>{selectedPlace.rating}</Text>
+
+            <Text
+              style={{
+                color: Colors.primary,
+                fontSize: 16,
+                fontFamily: "Avenir-Medium",
+              }}
+            >
+              ({selectedPlace.user_ratings_total} Reviews)
             </Text>
           </View>
 
@@ -174,9 +183,18 @@ const DescriptionSection = ({ selectedPlace }: DescriptionSectionProps) => {
 };
 
 const styles = StyleSheet.create({
-  detailContainer: {
-    zIndex: 100,
+  container: {
     flex: 1,
+    backgroundColor: Colors.background,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    borderRadius: 25,
   },
   handleIndicatorContainer: {
     position: "absolute",
@@ -235,7 +253,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bookmarkButton: {
-    backgroundColor: "#FEF2F0",
+    backgroundColor: Colors.primary,
     padding: 12,
     borderRadius: 12,
   },
@@ -243,6 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 8,
+    gap: 4,
   },
   rating: {
     marginLeft: 8,
@@ -300,19 +319,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginVertical: 16,
   },
   menuButton: {
     flex: 1,
     backgroundColor: "#F37B5A",
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 16,
     alignItems: "center",
+    justifyContent: "center",
   },
   callButton: {
     backgroundColor: "#3C3C3C",
-    padding: 15,
-    borderRadius: 10,
+    padding: 18,
+    borderRadius: 16,
     aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -322,8 +341,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Avenir-Medium",
     fontWeight: "500",
-  },
-  scrollContainer: {
-    flex: 1,
   },
 });
