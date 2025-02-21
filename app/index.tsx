@@ -1,6 +1,6 @@
 import { Animated, View, StyleSheet, Platform } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView from "react-native-maps";
 import MapHeader from "../components/MapHeader";
 import { StatusBar } from "expo-status-bar";
 import BottomSheet, {
@@ -54,7 +54,7 @@ export default function PlaceScreen() {
   const places = searchQuery ? searchResults : nearbyPlaces;
 
   const snapPoints = useMemo(() => ["45%", "50%", "75%"], []);
-  const detailSnapPoints = useMemo(() => ["95%"], []);
+  const detailSnapPoints = useMemo(() => ["90%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const [keyboardVisible, setKeyboardVisible] = React.useState(false);
@@ -155,8 +155,7 @@ export default function PlaceScreen() {
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
-        mapType="hybrid"
-        showsTraffic={true}
+        userInterfaceStyle="light"
       >
         {renderMarkers()}
       </MapView>

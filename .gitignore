@@ -2,7 +2,7 @@
 
 # dependencies
 node_modules/
-
+*.aab
 .idea
 .env
 # Expo

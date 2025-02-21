@@ -1,95 +1,102 @@
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import { Alert, Linking } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import { Coordinates } from "../types/places";
 
 export const useLocation = () => {
   const [location, setLocation] = useState<Coordinates | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const openSettings = async () => {
-    await Linking.openSettings();
-  };
-
-  const checkLocationPermission = async () => {
-    const { status: existingStatus } =
-      await Location.getForegroundPermissionsAsync();
-    return existingStatus;
-  };
-
-  const requestLocation = async () => {
-    setIsLoading(true);
-    setErrorMsg(null);
-
     try {
-      const currentPermission = await checkLocationPermission();
-
-      if (currentPermission === Location.PermissionStatus.DENIED) {
-        Alert.alert(
-          "Permiso de ubicación requerido",
-          "Esta aplicación necesita acceder a tu ubicación para mostrar lugares cercanos. Por favor, habilita el acceso a la ubicación en la configuración.",
-          [
-            {
-              text: "Cancelar",
-              style: "cancel",
-              onPress: () => setErrorMsg("Permiso de ubicación denegado"),
-            },
-            {
-              text: "Abrir Configuración",
-              onPress: openSettings,
-            },
-          ]
-        );
-        setIsLoading(false);
-        return false;
+      if (Platform.OS === "android") {
+        await Linking.sendIntent("android.settings.LOCATION_SOURCE_SETTINGS");
+      } else {
+        await Linking.openSettings();
       }
+    } catch (error) {
+      console.error("Error opening settings:", error);
+    }
+  };
 
+  const requestLocationPermission = async (): Promise<boolean> => {
+    try {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status !== Location.PermissionStatus.GRANTED) {
-        setErrorMsg("Se requiere permiso para acceder a la ubicación");
-        setIsLoading(false);
+      if (status !== "granted") {
+        Alert.alert(
+          "Permiso denegado",
+          "Necesitamos acceso a tu ubicación para mostrar lugares cercanos.",
+          [
+            { text: "Abrir Configuración", onPress: openSettings },
+            { text: "Cancelar", style: "cancel" },
+          ]
+        );
         return false;
       }
+      return true;
+    } catch (error) {
+      console.error("Error requesting permission:", error);
+      return false;
+    }
+  };
 
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-        timeInterval: 5000,
+  const getCurrentLocation = async (): Promise<void> => {
+    try {
+      setIsLoading(true);
+      setErrorMsg(null);
+
+      const enabled = await Location.hasServicesEnabledAsync();
+      if (!enabled) {
+        Alert.alert(
+          "Ubicación desactivada",
+          "Por favor activa la ubicación de tu dispositivo",
+          [
+            { text: "Abrir Configuración", onPress: openSettings },
+            { text: "Cancelar", style: "cancel" },
+          ]
+        );
+        setErrorMsg("La ubicación está desactivada");
+        return;
+      }
+
+      const hasPermission = await requestLocationPermission();
+      if (!hasPermission) {
+        setErrorMsg("Permiso de ubicación denegado");
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
       });
 
       setLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
       });
-
-      return true;
     } catch (error) {
-      Alert.alert(
-        "Error de ubicación",
-        "No se pudo obtener tu ubicación. Por favor, verifica que el GPS esté activado y vuelve a intentarlo.",
-        [
-          {
-            text: "OK",
-            onPress: () => setErrorMsg("Error al obtener la ubicación"),
-          },
-        ]
-      );
-      return false;
+      console.error("Error getting location:", error);
+      setErrorMsg("No se pudo obtener la ubicación");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    requestLocation();
+    getCurrentLocation();
   }, []);
+
+  const refreshLocation = () => {
+    if (!isLoading) {
+      getCurrentLocation();
+    }
+  };
 
   return {
     location,
     errorMsg,
     isLoading,
-    requestLocation,
-    checkLocationPermission,
+    refreshLocation,
   };
 };

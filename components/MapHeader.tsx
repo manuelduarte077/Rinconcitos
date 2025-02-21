@@ -25,14 +25,16 @@ export default function MapHeader({
   return (
     <View style={[styles.container, { paddingTop: insets.top + 10 }]}>
       <LinearGradient
-        colors={["rgba(0,0,0,0.4)", "transparent"]}
+        colors={["rgba(0,0,0,0.6)", "transparent"]}
         style={styles.gradient}
       />
       <TouchableOpacity style={styles.buttonBase} onPress={onMenuPress}>
         <AntDesign name="menu-fold" size={22} color="#000000" />
       </TouchableOpacity>
 
-      <Text style={styles.title}>Rincóncitos</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Rincóncitos</Text>
+      </View>
 
       <TouchableOpacity style={styles.buttonBase} onPress={onProfilePress}>
         <AntDesign name="user" size={22} color="#000000" />
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: "150%",
+    height: "200%",
     zIndex: -1,
   },
   buttonBase: {
@@ -67,9 +69,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
   },
+  titleContainer: {
+    position: "relative",
+    alignItems: "center",
+  },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     color: Colors.text,
     fontFamily: "Avenir-Medium",
+    fontWeight: "black",
   },
 });
