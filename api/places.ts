@@ -11,16 +11,7 @@ interface PlacesResponse {
   error_message?: string;
 }
 
-// Tipos de lugares que queremos mostrar
-const PLACE_TYPES = [
-  "restaurant",
-  "cafe",
-  "bar",
-  "food",
-  "bakery",
-  "meal_takeaway",
-  "meal_delivery",
-].join("|");
+const PLACE_TYPES = ["restaurant", "cafe", "food", "bakery"].join("|");
 
 export const searchPlacesByQuery = async (
   query: string,
@@ -34,6 +25,7 @@ export const searchPlacesByQuery = async (
       query,
       location: `${latitude},${longitude}`,
       radius,
+      type: PLACE_TYPES,
       key: process.env.EXPO_PUBLIC_API_KEY,
       maxResults,
     },
@@ -43,19 +35,30 @@ export const searchPlacesByQuery = async (
     throw new Error(data.error_message || "Error al buscar lugares");
   }
 
-  return data.results.slice(0, maxResults);
+  const filteredResults = data.results.filter((place) =>
+    place.types.some(
+      (type) =>
+        type === "restaurant" ||
+        type === "cafe" ||
+        type === "food" ||
+        type === "bakery"
+    )
+  );
+
+  return filteredResults.slice(0, maxResults);
 };
 
 export const getNearbyPlaces = async (
   latitude: number,
   longitude: number,
-  radius: number = 10000, // 10 km
+  radius: number = 10000,
   maxResults: number = 20
 ): Promise<Place[]> => {
   const { data } = await placesApi.get<PlacesResponse>("/nearbysearch/json", {
     params: {
       location: `${latitude},${longitude}`,
       radius,
+      type: PLACE_TYPES,
       key: process.env.EXPO_PUBLIC_API_KEY,
       maxResults,
     },
@@ -65,7 +68,17 @@ export const getNearbyPlaces = async (
     throw new Error(data.error_message || "Error al buscar lugares cercanos");
   }
 
-  return data.results.slice(0, maxResults);
+  const filteredResults = data.results.filter((place) =>
+    place.types.some(
+      (type) =>
+        type === "restaurant" ||
+        type === "cafe" ||
+        type === "food" ||
+        type === "bakery"
+    )
+  );
+
+  return filteredResults.slice(0, maxResults);
 };
 
 export const getPlaceDetails = async (placeId: string) => {
@@ -114,75 +127,4 @@ export const getCityFromPlace = (
   }
 
   return { city, fullAddress };
-};
-
-export const getNearbyPlacesGoogle = async (
-  latitude: number,
-  longitude: number,
-  radius: number = 10000 // 10 km
-) => {
-  try {
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=${PLACE_TYPES}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}&rankby=rating`
-    );
-    const data = await response.json();
-
-    if (!data.results) return [];
-
-    return data.results.map((place: any) => ({
-      ...place,
-      mainPhoto: place.photos?.[0]
-        ? getPhotoUrl(place.photos[0].photo_reference)
-        : null,
-      location: place.geometry?.location || { lat: latitude, lng: longitude },
-      distance: calculateDistance(
-        latitude,
-        longitude,
-        place.geometry?.location.lat,
-        place.geometry?.location.lng
-      ),
-    }));
-  } catch (error) {
-    console.error("Error fetching nearby places:", error);
-    return [];
-  }
-};
-
-// Función auxiliar para calcular la distancia entre dos puntos
-const calculateDistance = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number => {
-  const R = 6371;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
-
-const toRad = (value: number): number => (value * Math.PI) / 180;
-
-export const searchPlacesByQueryGoogle = async (
-  query: string,
-  latitude: number,
-  longitude: number
-) => {
-  try {
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&location=${latitude},${longitude}&radius=1500&type=${PLACE_TYPES}&key=${process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY}`
-    );
-    const data = await response.json();
-    return data.results;
-  } catch (error) {
-    console.error("Error searching places:", error);
-    return [];
-  }
 };
