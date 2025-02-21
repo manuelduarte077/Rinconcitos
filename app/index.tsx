@@ -1,6 +1,6 @@
 import { Animated, View, StyleSheet, Platform } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView from "react-native-maps";
 import MapHeader from "../components/MapHeader";
 import { StatusBar } from "expo-status-bar";
 import BottomSheet, {
