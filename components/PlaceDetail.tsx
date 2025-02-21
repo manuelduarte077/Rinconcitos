@@ -37,19 +37,20 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
           <View style={styles.headerRow}>
             <View style={styles.statusBadge}>
               <Text style={styles.statusText}>
-                {isOpen ? "OPEN" : "CLOSED"}
+                {isOpen ? "Open" : "Closed"}
               </Text>
             </View>
-            <Ionicons name="location" size={16} color={Colors.primary} />
-            <Text style={styles.location}>USA</Text>
+            <View style={styles.locationContainer}>
+              <Ionicons name="location" size={16} color={Colors.subText} />
+              <Text style={styles.location}>USA</Text>
+            </View>
           </View>
 
           <View style={styles.titleContainer}>
             <Text style={styles.detailTitle}>{selectedPlace.name}</Text>
-            <Ionicons 
-              style={styles.bookmarkIcon}
-            
-            name="bookmark" size={16} color={Colors.primary} />
+            <TouchableOpacity style={styles.bookmarkButton}>
+              <Ionicons name="bookmark" size={24} color={Colors.primary} />
+            </TouchableOpacity>
           </View>
           
           <View style={styles.ratingContainer}>
@@ -58,7 +59,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
                 key={index}
                 name={index < Math.floor(selectedPlace.rating) ? "star" : "star-outline"} 
                 size={20} 
-                color={Colors.star} 
+                color="#FFC107" 
               />
             ))}
             <Text style={styles.rating}>
@@ -174,45 +175,57 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    marginTop: 10,
+    gap: 12,
+    marginTop: 16,
   },
   statusBadge: {
     backgroundColor: '#90D67F',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   statusText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: "Avenir-Medium",
   },
-  detailTitle: {
-    fontSize: 22,
-    fontFamily: "Avenir-Black",
-    marginBottom: 8,
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  location: {
+    color: Colors.subText,
+    fontSize: 16,
+    fontFamily: "Avenir-Medium",
   },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 8,
   },
-  bookmarkIcon: {
-    color: Colors.primary,
-    fontSize: 20,
+  detailTitle: {
+    fontSize: 32,
+    fontFamily: "Avenir-Black",
+    color: Colors.text,
+    flex: 1,
+  },
+  bookmarkButton: {
+    backgroundColor: '#FEF2F0',
+    padding: 12,
+    borderRadius: 12,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    marginTop: 8,
   },
   rating: {
     marginLeft: 8,
-    color: Colors.primary,
-    fontSize: 14,
+    color: Colors.subText,
+    fontSize: 16,
     fontFamily: "Avenir-Medium",
-
   },
   mapPreview: {
     height: 120,
@@ -259,10 +272,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-  },
-  location: {
-    color: Colors.subText,
-    fontFamily: "Avenir-Medium",
   },
   buttonContainer: {
     flexDirection: 'row',
