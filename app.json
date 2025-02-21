@@ -27,7 +27,10 @@
         "backgroundColor": "#ffffff"
       },
       "package": "dev.donmanuel.rinconcitos.app",
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -52,6 +55,7 @@
       "eas": {
         "projectId": "8befc31e-c29c-49f6-bbff-d18500a29969"
       }
-    }
+    },
+    "owner": "manuelduarte077"
   }
 }

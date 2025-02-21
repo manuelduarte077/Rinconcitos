@@ -21,7 +21,6 @@ export const CustomMarker = ({
   const isSelected = selectedPlaceId === place.place_id;
   const isOpen = place.business_status === "OPERATIONAL";
 
-
   return (
     <Marker
       coordinate={{
@@ -54,7 +53,11 @@ export const CustomMarker = ({
               {place.name}
             </Text>
             <View style={styles.ratingContainer}>
-              <Ionicons name="star" size={16} color={Colors.background} />
+              <Ionicons
+                name="star-outline"
+                size={16}
+                color={Colors.background}
+              />
               <Text style={styles.rating}>{place.rating}</Text>
             </View>
           </View>
@@ -71,21 +74,20 @@ const styles = StyleSheet.create({
   markerContainer: {
     alignItems: "center",
     justifyContent: "center",
-    width: 48,
-    height: 48,
+    width: 30,
+    height: 30,
   },
   markerOuterRing: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 25,
+    height: 25,
     backgroundColor: Colors.primary,
-    opacity: 0.7,
+    borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
   },
   markerInnerRing: {
-    width: 20,
-    height: 20,
+    width: 10,
+    height: 10,
     borderRadius: 10,
     backgroundColor: Colors.background,
     opacity: 0.8,

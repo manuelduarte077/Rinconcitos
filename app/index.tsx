@@ -1,6 +1,6 @@
-import { Animated, View, StyleSheet, Platform } from "react-native";
+import { Animated, View, StyleSheet, Platform, Dimensions } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_DEFAULT, PROVIDER_GOOGLE } from "react-native-maps";
 import MapHeader from "../components/MapHeader";
 import { StatusBar } from "expo-status-bar";
 import BottomSheet, {
@@ -18,9 +18,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "../hooks/useLocation";
 import { getNearbyPlaces, searchPlacesByQuery } from "../api/places";
-import { ShimmerPlaceItem } from '@/components/ShimmerPlaceItem';
-import { CustomMarker } from '@/components/CustomMarker';
-
+import { ShimmerPlaceItem } from "@/components/ShimmerPlaceItem";
+import { CustomMarker } from "@/components/CustomMarker";
 
 const keyExtractor = (item: Place) => item.place_id;
 
@@ -43,10 +42,19 @@ export default function PlaceScreen() {
   });
 
   const { data: searchResults = [], isLoading: searchLoading } = useQuery({
-    queryKey: ["search-places", searchQuery, location?.latitude, location?.longitude],
+    queryKey: [
+      "search-places",
+      searchQuery,
+      location?.latitude,
+      location?.longitude,
+    ],
     queryFn: () =>
       location && searchQuery
-        ? searchPlacesByQuery(searchQuery, location.latitude, location.longitude)
+        ? searchPlacesByQuery(
+            searchQuery,
+            location.latitude,
+            location.longitude
+          )
         : Promise.resolve([]),
     enabled: !!location && !!searchQuery,
   });
@@ -54,7 +62,7 @@ export default function PlaceScreen() {
   const places = searchQuery ? searchResults : nearbyPlaces;
 
   const snapPoints = useMemo(() => ["45%", "50%", "75%"], []);
-  const detailSnapPoints = useMemo(() => ["90%"], []);
+  const detailSnapPoints = useMemo(() => ["85%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const [keyboardVisible, setKeyboardVisible] = React.useState(false);
@@ -87,11 +95,13 @@ export default function PlaceScreen() {
   }, []);
 
   const handlePlacePress = useCallback((place: Place) => {
+    console.log("2");
     setSelectedPlace(place);
     detailSheetRef.current?.snapToIndex(0);
   }, []);
 
   const handleMarkerPress = (place: Place) => {
+    console.log("1");
     mapRef.current?.animateToRegion({
       latitude: place.geometry.location.lat,
       longitude: place.geometry.location.lng,
@@ -125,9 +135,9 @@ export default function PlaceScreen() {
   );
 
   const renderLoadingState = () => {
-    return Array(5).fill(0).map((_, index) => (
-      <ShimmerPlaceItem key={index} />
-    ));
+    return Array(5)
+      .fill(0)
+      .map((_, index) => <ShimmerPlaceItem key={index} />);
   };
 
   const renderMarkers = () => {
@@ -147,11 +157,18 @@ export default function PlaceScreen() {
       <StatusBar style="dark" />
       <MapView
         ref={mapRef}
-        style={{ flex: 1 }}
-        showsUserLocation={true}
+        provider={
+          Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+        }
+        style={{
+          flex: 1,
+          width: Dimensions.get("window").width,
+          height: Dimensions.get("window").height,
+        }}
+        showsUserLocation
         region={{
-          latitude: location?.latitude ?? 12.13282,
-          longitude: location?.longitude ?? -86.2504,
+          latitude: location?.latitude ?? 0,
+          longitude: location?.longitude ?? 0,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
@@ -204,6 +221,7 @@ export default function PlaceScreen() {
         backdropComponent={renderBackdrop}
         index={-1}
         enableDynamicSizing={false}
+        topInset={safeArea.top}
         handleComponent={() => <View style={{ height: 0 }} />}
       >
         {selectedPlace && <PlaceDetail selectedPlace={selectedPlace} />}
@@ -224,7 +242,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   markerContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     width: 150,
   },
   markerImage: {
@@ -239,12 +257,12 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
     marginTop: 4,
-    maxWidth: '100%',
+    maxWidth: "100%",
   },
   markerName: {
     color: Colors.background,
     fontSize: 12,
     fontFamily: "Avenir-Medium",
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
