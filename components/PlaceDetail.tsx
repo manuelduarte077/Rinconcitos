@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#90D67F",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 12,
   },
   statusText: {
     color: "#fff",
