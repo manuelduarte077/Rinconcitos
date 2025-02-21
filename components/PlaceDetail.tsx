@@ -30,17 +30,23 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
   const city = getCityFromPlace(selectedPlace);
 
   return (
-    <ScrollView style={styles.detailContainer} showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
       <View style={styles.handleIndicatorContainer}>
         <View style={styles.handleIndicatorStyle} />
       </View>
-
-        <Image
-          source={{ uri: photoUrl }}
-          style={styles.detailImage}
-          contentFit="cover"
-        />
-
+      <Image
+        source={{ uri: photoUrl }}
+        style={styles.detailImage}
+        contentFit="cover"
+      />
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        bounces={Platform.OS === "ios"}
+        nestedScrollEnabled={true}
+        automaticallyAdjustContentInsets={true}
+      >
         <View style={styles.mainContent}>
           <View style={styles.headerRow}>
             <View style={styles.statusBadge}>
@@ -74,15 +80,15 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
                 color="#FFC107"
               />
             ))}
-            <Text style={styles.rating}>
-              {selectedPlace.rating}
-            </Text>
+            <Text style={styles.rating}>{selectedPlace.rating}</Text>
 
-            <Text style={{
-              color: Colors.primary,
-              fontSize: 16,
-              fontFamily: "Avenir-Medium",
-            }}>
+            <Text
+              style={{
+                color: Colors.primary,
+                fontSize: 16,
+                fontFamily: "Avenir-Medium",
+              }}
+            >
               ({selectedPlace.user_ratings_total} Reviews)
             </Text>
           </View>
@@ -124,9 +130,10 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
             <TouchableOpacity style={styles.callButton}>
               <Ionicons name="call" size={20} color="white" />
             </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -176,8 +183,18 @@ const DescriptionSection = ({ selectedPlace }: DescriptionSectionProps) => {
 };
 
 const styles = StyleSheet.create({
-  detailContainer: {
+  container: {
     flex: 1,
+    backgroundColor: Colors.background,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    borderRadius: 25,
   },
   handleIndicatorContainer: {
     position: "absolute",
