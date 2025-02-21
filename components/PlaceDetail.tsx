@@ -1,11 +1,23 @@
-import { Platform, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Image } from "expo-image";
 import { Place } from "@/types/places";
 import Colors from "@/constants/Colors";
-import { getPhotoUrl } from "@/api/places";
-import MapView, { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Marker, Callout } from "react-native-maps";
+import { getCityFromPlace, getPhotoUrl } from "@/api/places";
+import MapView, {
+  PROVIDER_GOOGLE,
+  PROVIDER_DEFAULT,
+  Marker,
+  Callout,
+} from "react-native-maps";
 
 interface PlaceDetailProps {
   selectedPlace: Place;
@@ -16,23 +28,23 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
   const photoUrl = selectedPlace.photos?.[0]?.photo_reference
     ? getPhotoUrl(selectedPlace.photos[0].photo_reference)
     : null;
+  const city = getCityFromPlace(selectedPlace);
 
   return (
     <View style={styles.detailContainer}>
       <View style={styles.handleIndicatorContainer}>
         <View style={styles.handleIndicatorStyle} />
       </View>
-
-      <Image
-        source={{ uri: photoUrl }}
-        style={styles.detailImage}
-        contentFit="cover"
-      />
-
-      <ScrollView 
+      <ScrollView
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
+        <Image
+          source={{ uri: photoUrl }}
+          style={styles.detailImage}
+          contentFit="cover"
+        />
+
         <View style={styles.mainContent}>
           <View style={styles.headerRow}>
             <View style={styles.statusBadge}>
@@ -42,7 +54,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
             </View>
             <View style={styles.locationContainer}>
               <Ionicons name="location" size={16} color={Colors.subText} />
-              <Text style={styles.location}>USA</Text>
+              <Text style={styles.location}>{city.city}</Text>
             </View>
           </View>
 
@@ -52,18 +64,23 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
               <Ionicons name="bookmark" size={24} color={Colors.primary} />
             </TouchableOpacity>
           </View>
-          
+
           <View style={styles.ratingContainer}>
             {[1, 2, 3, 4, 5].map((star, index) => (
-              <Ionicons 
+              <Ionicons
                 key={index}
-                name={index < Math.floor(selectedPlace.rating) ? "star" : "star-outline"} 
-                size={20} 
-                color="#FFC107" 
+                name={
+                  index < Math.floor(selectedPlace.rating)
+                    ? "star"
+                    : "star-outline"
+                }
+                size={20}
+                color="#FFC107"
               />
             ))}
             <Text style={styles.rating}>
-              {selectedPlace.rating} ({selectedPlace.user_ratings_total} Reviews)
+              {selectedPlace.rating} ({selectedPlace.user_ratings_total}{" "}
+              Reviews)
             </Text>
           </View>
 
@@ -72,7 +89,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
               style={{
                 width: "100%",
                 height: "100%",
-                overflow: 'hidden',
+                overflow: "hidden",
               }}
               initialRegion={{
                 latitude: selectedPlace.geometry.location.lat,
@@ -80,7 +97,9 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
               }}
-              provider={Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+              provider={
+                Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+              }
             >
               <Marker
                 coordinate={{
@@ -114,18 +133,18 @@ interface DescriptionSectionProps {
 }
 
 const DescriptionSection = ({ selectedPlace }: DescriptionSectionProps) => {
-  const isRestaurant = selectedPlace.types?.includes('restaurant');
+  const isRestaurant = selectedPlace.types?.includes("restaurant");
   const isPriceAvailable = selectedPlace.price_level !== undefined;
-  
+
   const getPriceLevel = (level?: number) => {
-    if (!level) return '';
-    return '💰'.repeat(level);
+    if (!level) return "";
+    return "💰".repeat(level);
   };
 
   return (
     <View style={styles.descriptionSection}>
       <Text style={styles.sectionTitle}>Description</Text>
-      
+
       <View style={styles.descriptionContent}>
         {isPriceAvailable && (
           <View style={styles.priceContainer}>
@@ -133,15 +152,19 @@ const DescriptionSection = ({ selectedPlace }: DescriptionSectionProps) => {
               {getPriceLevel(selectedPlace.price_level)}
             </Text>
             <Text style={styles.priceText}>
-              {selectedPlace.price_level === 1 ? 'Budget' : 
-               selectedPlace.price_level === 2 ? 'Moderate' : 
-               selectedPlace.price_level === 3 ? 'Expensive' : 'Very Expensive'}
+              {selectedPlace.price_level === 1
+                ? "Budget"
+                : selectedPlace.price_level === 2
+                ? "Moderate"
+                : selectedPlace.price_level === 3
+                ? "Expensive"
+                : "Very Expensive"}
             </Text>
           </View>
         )}
 
         <Text style={styles.description}>
-          {isRestaurant 
+          {isRestaurant
             ? "Experience unique flavors in a cozy atmosphere. Fresh ingredients and quality service make every visit special."
             : "Discover this amazing spot offering a unique experience in its category. Quality service in a comfortable environment."}
         </Text>
@@ -173,25 +196,25 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     marginTop: 16,
   },
   statusBadge: {
-    backgroundColor: '#90D67F',
+    backgroundColor: "#90D67F",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
   },
   statusText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
     fontFamily: "Avenir-Medium",
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   location: {
@@ -200,9 +223,9 @@ const styles = StyleSheet.create({
     fontFamily: "Avenir-Medium",
   },
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 8,
   },
   detailTitle: {
@@ -212,13 +235,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bookmarkButton: {
-    backgroundColor: '#FEF2F0',
+    backgroundColor: "#FEF2F0",
     padding: 12,
     borderRadius: 12,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 8,
   },
   rating: {
@@ -229,10 +252,10 @@ const styles = StyleSheet.create({
   },
   mapPreview: {
     height: 120,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
     borderRadius: 12,
     marginVertical: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   descriptionSection: {
     gap: 12,
@@ -253,8 +276,8 @@ const styles = StyleSheet.create({
     fontFamily: "Avenir-Medium",
   },
   priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   priceLevel: {
@@ -274,34 +297,33 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     marginVertical: 16,
   },
   menuButton: {
     flex: 1,
-    backgroundColor: '#F37B5A',
+    backgroundColor: "#F37B5A",
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   callButton: {
-    backgroundColor: '#3C3C3C',
+    backgroundColor: "#3C3C3C",
     padding: 15,
     borderRadius: 10,
     aspectRatio: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
     fontFamily: "Avenir-Medium",
-    fontWeight: '500',
+    fontWeight: "500",
   },
   scrollContainer: {
     flex: 1,
   },
 });
-
