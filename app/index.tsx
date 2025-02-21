@@ -20,6 +20,7 @@ import { useLocation } from "../hooks/useLocation";
 import { getNearbyPlaces, searchPlacesByQuery } from "../api/places";
 import { ShimmerPlaceItem } from "@/components/ShimmerPlaceItem";
 import { CustomMarker } from "@/components/CustomMarker";
+import { RadiusFilterModal } from "../components/RadiusFilterModal";
 
 const keyExtractor = (item: Place) => item.place_id;
 
@@ -31,12 +32,14 @@ export default function PlaceScreen() {
 
   const { location, errorMsg, isLoading: locationLoading } = useLocation();
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchRadius, setSearchRadius] = useState<number>(2000);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
 
   const { data: nearbyPlaces = [], isLoading: nearbyPlacesLoading } = useQuery({
-    queryKey: ["nearby-places", location?.latitude, location?.longitude],
+    queryKey: ["nearby-places", location?.latitude, location?.longitude, searchRadius],
     queryFn: () =>
       location
-        ? getNearbyPlaces(location.latitude, location.longitude)
+        ? getNearbyPlaces(location.latitude, location.longitude, searchRadius)
         : Promise.resolve([]),
     enabled: !!location && !searchQuery,
   });
@@ -47,13 +50,15 @@ export default function PlaceScreen() {
       searchQuery,
       location?.latitude,
       location?.longitude,
+      searchRadius
     ],
     queryFn: () =>
       location && searchQuery
         ? searchPlacesByQuery(
             searchQuery,
             location.latitude,
-            location.longitude
+            location.longitude,
+            searchRadius
           )
         : Promise.resolve([]),
     enabled: !!location && !!searchQuery,
@@ -194,6 +199,8 @@ export default function PlaceScreen() {
         }}
       >
         <SearchBar
+          placeholder="Search"
+          onFilterPress={() => setIsFilterModalVisible(true)}
           onSearch={(query) => {
             setSearchQuery(query);
           }}
@@ -226,6 +233,13 @@ export default function PlaceScreen() {
       >
         {selectedPlace && <PlaceDetail selectedPlace={selectedPlace} />}
       </BottomSheet>
+
+      <RadiusFilterModal
+        visible={isFilterModalVisible}
+        onClose={() => setIsFilterModalVisible(false)}
+        onSelectRadius={setSearchRadius}
+        currentRadius={searchRadius}
+      />
     </GestureHandlerRootView>
   );
 }

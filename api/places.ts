@@ -49,7 +49,7 @@ export const searchPlacesByQuery = async (
 export const getNearbyPlaces = async (
   latitude: number,
   longitude: number,
-  radius: number = 10000,
+  radius: number = 10000, // 10 km
   maxResults: number = 20
 ): Promise<Place[]> => {
   const { data } = await placesApi.get<PlacesResponse>("/nearbysearch/json", {
@@ -119,7 +119,7 @@ export const getCityFromPlace = (
 export const getNearbyPlacesGoogle = async (
   latitude: number,
   longitude: number,
-  radius: number = 1500
+  radius: number = 10000 // 10 km
 ) => {
   try {
     const response = await fetch(

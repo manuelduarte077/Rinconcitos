@@ -1,14 +1,20 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from 'react';
-import Colors from '@/constants/Colors';
+import React, { useState } from "react";
+import Colors from "@/constants/Colors";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
+  placeholder?: string;
+  onFilterPress: () => void;
 }
 
-export const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const [searchText, setSearchText] = useState('');
+export const SearchBar = ({
+  onSearch,
+  placeholder = "Buscar lugares cercanos",
+  onFilterPress,
+}: SearchBarProps) => {
+  const [searchText, setSearchText] = useState("");
 
   const handleSearch = () => {
     if (searchText.trim()) {
@@ -21,8 +27,8 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
       <View style={styles.searchBar}>
         <Ionicons name="search" size={28} color={Colors.primary} />
         <View style={styles.divider} />
-        <TextInput 
-          placeholder="Buscar lugares cercanos" 
+        <TextInput
+          placeholder={placeholder}
           style={styles.searchInput}
           value={searchText}
           onChangeText={setSearchText}
@@ -30,9 +36,13 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
           returnKeyType="search"
         />
       </View>
-      <View style={styles.filterButton}>
-        <Ionicons name="options" size={28} color={Colors.tint} />
-      </View>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onFilterPress}
+        style={styles.filterButton}
+      >
+        <Ionicons name="options-outline" size={28} color={Colors.tint} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -57,11 +67,14 @@ const styles = StyleSheet.create({
     gap: 8,
     borderWidth: 1,
     borderColor: Colors.subText,
+    fontFamily: "Avenir-Medium",
   },
   searchInput: {
     flex: 1,
     height: 44,
     fontSize: 16,
+    color: Colors.text,
+    fontFamily: "Avenir-Medium",
   },
   filterButton: {
     width: 48,
@@ -76,4 +89,4 @@ const styles = StyleSheet.create({
     height: 26,
     backgroundColor: Colors.subText,
   },
-}); 
+});
