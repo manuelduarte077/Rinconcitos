@@ -13,7 +13,8 @@
       "bundleIdentifier": "dev.donmanuel.rinconcitos.app",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Necesitamos acceso a tu ubicación para mostrar lugares cercanos.",
-        "NSLocationAlwaysUsageDescription": "Necesitamos acceso a tu ubicación para mostrar lugares cercanos."
+        "NSLocationAlwaysUsageDescription": "Necesitamos acceso a tu ubicación para mostrar lugares cercanos.",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "icon": {
         "dark": "./assets/images/ios-dark.png",
