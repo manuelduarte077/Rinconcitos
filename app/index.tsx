@@ -221,6 +221,7 @@ export default function PlaceScreen() {
         backdropComponent={renderBackdrop}
         index={-1}
         enableDynamicSizing={false}
+        topInset={safeArea.top}
         handleComponent={() => <View style={{ height: 0 }} />}
       >
         {selectedPlace && <PlaceDetail selectedPlace={selectedPlace} />}
