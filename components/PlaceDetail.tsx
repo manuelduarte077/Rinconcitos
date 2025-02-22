@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -23,6 +24,25 @@ interface PlaceDetailProps {
 }
 
 export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
+  const slideAnim = React.useRef(new Animated.Value(0)).current;
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    Animated.parallel([
+      Animated.spring(slideAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+        tension: 50,
+        friction: 7,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   const isOpen = selectedPlace.business_status === "OPERATIONAL";
   const photoUrl = selectedPlace.photos?.[0]?.photo_reference
     ? getPhotoUrl(selectedPlace.photos[0].photo_reference)
@@ -30,7 +50,22 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
   const city = getCityFromPlace(selectedPlace);
 
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          transform: [
+            {
+              translateY: slideAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [300, 0],
+              }),
+            },
+          ],
+          opacity: fadeAnim,
+        },
+      ]}
+    >
       <View style={styles.handleIndicatorContainer}>
         <View style={styles.handleIndicatorStyle} />
       </View>
@@ -65,7 +100,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
           <View style={styles.titleContainer}>
             <Text style={styles.detailTitle}>{selectedPlace.name}</Text>
             <TouchableOpacity style={styles.bookmarkButton}>
-              <Ionicons name="bookmark" size={24} color={Colors.background} />
+              <Ionicons name="bookmark" size={28} color={Colors.background} />
             </TouchableOpacity>
           </View>
 
@@ -97,6 +132,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
 
           <View style={styles.mapPreview}>
             <MapView
+              userInterfaceStyle="light"
               style={{
                 width: "100%",
                 height: "100%",
@@ -135,7 +171,7 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -234,7 +270,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   detailTitle: {
-    fontSize: 32,
+    fontSize: 24,
     fontFamily: "Avenir-Black",
     color: Colors.text,
     flex: 1,
