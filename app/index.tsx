@@ -198,13 +198,13 @@ export default function PlaceScreen() {
           backgroundColor: Colors.backgroundSecondary,
         }}
       >
-        <SearchBar
+       <SearchBar
           placeholder="Search"
           onFilterPress={() => setIsFilterModalVisible(true)}
           onSearch={(query) => {
             setSearchQuery(query);
           }}
-        />
+        /> 
         <View style={styles.listContainer}>
           {nearbyPlacesLoading || searchLoading ? (
             renderLoadingState()

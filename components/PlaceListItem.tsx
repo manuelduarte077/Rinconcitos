@@ -1,6 +1,6 @@
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Place } from "@/types/places";
 import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
@@ -28,13 +28,35 @@ export const PlaceListItem = ({
     outputRange: [1, 1, 1, 0.8],
   });
 
+  const translateX = useRef(new Animated.Value(100)).current;
+
+  useEffect(() => {
+    Animated.spring(translateX, {
+      toValue: 0,
+      tension: 50,
+      friction: 7,
+      delay: index * 100,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   const photoUrl = getPhotoUrl(item.photos[0].photo_reference);
   const isOpen = item.business_status === "OPERATIONAL";
   const city = getCityFromPlace(item);
 
   return (
     <Pressable onPress={() => onPress(item)}>
-      <Animated.View style={[styles.itemContainer, { transform: [{ scale }] }]}>
+      <Animated.View 
+        style={[
+          styles.itemContainer, 
+          { 
+            transform: [
+              { scale },
+              { translateX }
+            ] 
+          }
+        ]}
+      >
         <View style={styles.placeImage}>
           <Image
             source={{ uri: photoUrl }}
@@ -68,10 +90,7 @@ export const PlaceListItem = ({
               </Text>
             </View>
             <Ionicons name="location" size={14} color={Colors.primary} />
-            <Text
-              numberOfLines={1}
-              style={styles.location}
-            >
+            <Text numberOfLines={1} style={styles.location}>
               {city.city}
             </Text>
           </View>

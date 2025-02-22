@@ -157,23 +157,6 @@ const DescriptionSection = ({ selectedPlace }: DescriptionSectionProps) => {
       <Text style={styles.sectionTitle}>Description</Text>
 
       <View style={styles.descriptionContent}>
-        {isPriceAvailable && (
-          <View style={styles.priceContainer}>
-            <Text style={styles.priceLevel}>
-              {getPriceLevel(selectedPlace.price_level)}
-            </Text>
-            <Text style={styles.priceText}>
-              {selectedPlace.price_level === 1
-                ? "Budget"
-                : selectedPlace.price_level === 2
-                ? "Moderate"
-                : selectedPlace.price_level === 3
-                ? "Expensive"
-                : "Very Expensive"}
-            </Text>
-          </View>
-        )}
-
         <Text style={styles.description}>
           {isRestaurant
             ? "Experience unique flavors in a cozy atmosphere. Fresh ingredients and quality service make every visit special."
@@ -296,19 +279,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.subText,
     lineHeight: 24,
-    fontFamily: "Avenir-Medium",
-  },
-  priceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  priceLevel: {
-    fontSize: 16,
-  },
-  priceText: {
-    fontSize: 14,
-    color: Colors.text,
     fontFamily: "Avenir-Medium",
   },
   detailImage: {
