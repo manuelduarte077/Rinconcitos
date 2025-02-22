@@ -1,7 +1,8 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Colors from "@/constants/Colors";
+import { FadeInView } from "@/components/FadeInView";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -15,6 +16,26 @@ export const SearchBar = ({
   onFilterPress,
 }: SearchBarProps) => {
   const [searchText, setSearchText] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    Animated.spring(scaleAnim, {
+      toValue: 1.02,
+      friction: 8,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 8,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const handleSearch = () => {
     if (searchText.trim()) {
@@ -23,27 +44,36 @@ export const SearchBar = ({
   };
 
   return (
-    <View style={styles.searchContainer}>
-      <View style={styles.searchBar}>
-        <Ionicons name="search" size={28} color={Colors.primary} />
-        <View style={styles.divider} />
-        <TextInput
-          placeholder={placeholder}
-          style={styles.searchInput}
-          value={searchText}
-          onChangeText={setSearchText}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-        />
+    <FadeInView duration={500} delay={200}>
+      <View style={styles.searchContainer}>
+        <Animated.View 
+          style={[
+            styles.searchBar,
+            { transform: [{ scale: scaleAnim }] }
+          ]}
+        >
+          <Ionicons name="search" size={28} color={Colors.primary} />
+          <View style={styles.divider} />
+          <TextInput
+            placeholder={placeholder}
+            style={styles.searchInput}
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={handleSearch}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            returnKeyType="search"
+          />
+        </Animated.View>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={onFilterPress}
+          style={styles.filterButton}
+        >
+          <Ionicons name="options-outline" size={28} color={Colors.tint} />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={onFilterPress}
-        style={styles.filterButton}
-      >
-        <Ionicons name="options-outline" size={28} color={Colors.tint} />
-      </TouchableOpacity>
-    </View>
+    </FadeInView>
   );
 };
 
