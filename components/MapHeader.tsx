@@ -33,7 +33,7 @@ export default function MapHeader({
       </TouchableOpacity>
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Rincóncitos</Text>
+        <Text style={styles.title}>Rinconcitos</Text>
       </View>
 
       <TouchableOpacity style={styles.buttonBase} onPress={onProfilePress}>

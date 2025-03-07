@@ -66,7 +66,7 @@ export default function PlaceScreen() {
 
   const places = searchQuery ? searchResults : nearbyPlaces;
 
-  const snapPoints = useMemo(() => ["45%", "50%", "75%"], []);
+  const snapPoints = useMemo(() => ["45%", "50%", "90%"], []);
   const detailSnapPoints = useMemo(() => ["95%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
 
