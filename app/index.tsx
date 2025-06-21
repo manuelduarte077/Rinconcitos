@@ -66,12 +66,10 @@ export default function PlaceScreen() {
 
   const places = searchQuery ? searchResults : nearbyPlaces;
 
-  const snapPoints = useMemo(() => ["45%", "50%", "90%"], []);
+  const snapPoints = useMemo(() => ["45%", "50%", "95%"], []);
   const detailSnapPoints = useMemo(() => ["95%"], []);
   const scrollY = useRef(new Animated.Value(0)).current;
-
   const [keyboardVisible, setKeyboardVisible] = React.useState(false);
-
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   const mapRef = useRef<MapView>(null);
@@ -181,7 +179,7 @@ export default function PlaceScreen() {
       >
         {renderMarkers()}
       </MapView>
-      <MapHeader onMenuPress={() => {}} onProfilePress={() => {}} />
+      {/* <MapHeader onMenuPress={() => {}} onProfilePress={() => {}} /> */}
 
       <BottomSheet
         handleStyle={{ display: "none" }}

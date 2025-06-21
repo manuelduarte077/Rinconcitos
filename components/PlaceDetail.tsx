@@ -165,9 +165,6 @@ export const PlaceDetail = ({ selectedPlace }: PlaceDetailProps) => {
             <TouchableOpacity style={styles.menuButton}>
               <Text style={styles.buttonText}>View Menu</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.callButton}>
-              <Ionicons name="call" size={20} color="white" />
-            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -181,7 +178,6 @@ interface DescriptionSectionProps {
 
 const DescriptionSection = ({ selectedPlace }: DescriptionSectionProps) => {
   const isRestaurant = selectedPlace.types?.includes("restaurant");
-  const isPriceAvailable = selectedPlace.price_level !== undefined;
 
   const getPriceLevel = (level?: number) => {
     if (!level) return "";
@@ -329,20 +325,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+    paddingBottom: 16,
   },
   menuButton: {
     flex: 1,
     backgroundColor: "#F37B5A",
     padding: 18,
     borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  callButton: {
-    backgroundColor: "#3C3C3C",
-    padding: 18,
-    borderRadius: 16,
-    aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
   },
